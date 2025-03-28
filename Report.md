@@ -28,14 +28,14 @@ Ref: [TTM](https://arxiv.org/pdf/2401.03955), [TSMixer](https://arxiv.org/pdf/23
 
 ### TSMixer
 
-<img src="/Users/liuzeyang/Projects/TTMs/image-20250320035227920.png" alt="image-20250320035227920" style="zoom:27%;" /><img src="/Users/liuzeyang/Projects/TTMs/image-20250320035458988.png" alt="image-20250320035458988" style="zoom:33.5%;" /><img src="/Users/liuzeyang/Projects/TTMs/image-20250320035337366.png" alt="image-20250320035337366" style="zoom:30%;" />
+<img src="images/report_img/image-20250320035227920.png" alt="image-20250320035227920" style="zoom:27%;" /><img src="images/report_img/image-20250320035458988.png" alt="image-20250320035458988" style="zoom:33.5%;" /><img src="images/report_img/image-20250320035337366.png" alt="image-20250320035337366" style="zoom:30%;" />
 
 * **Work flow of TSMixer**: A multivariate time series sample is first normalized using instance normalization. Then, each univariate channel is divided into patches (small segments), and these patches are reshaped and passed into the TSMixer backbone, which consists of **stacked MLP-Mixer layers**. These layers capture dependencies between patches (temporal), within-patch features, and (optionally) across channels. A **lightweight gated attention** mechanism within each mixer block helps the model focus on important features. After the backbone, a prediction head generates the base forecast. Optionally, two online reconciliation heads refine the forecast: one adjusts it based on cross-channel relationships, and the other ensures consistency across temporal hierarchies (like patch-level aggregations). The final output is a tuned multivariate forecast.
 * **Innovations**: Unlike PatchTST, TSMixer use MLP-only layer to capture the information **between patches**, and also **dependence information between channels**. TSMixer achieved these by using **permutations and shared matrix across other fixed dimensions**.
 
 ### TTM
 
-<img src="/Users/liuzeyang/Projects/TTMs/image-20250320041502155.png" alt="image-20250320041502155" style="zoom:50%;" />
+<img src="images/report_img/image-20250320041502155.png" alt="image-20250320041502155" style="zoom:50%;" />
 
 * **Work flow of TTM**: A multivariate time series sample is first normalized per channel, then split into non-overlapping patches. Each channel is **treated independently**, and the patches are embedded into a hidden space. A **resolution prefix token** may be prepended to inform the model of the time resolution (e.g., hourly or minutely). The patched sequence is passed through the TTM backbone, a multi-level stack of lightweight TSMixer blocks interleaved with **gated attention**, where patch dimensions are **adaptively reshaped at each level** to learn both local and global patterns. During fine-tuning, the backbone is frozen, and a slim **decoder with optional channel mixing** produces the initial forecast. If exogenous variables are available, they are fused using an **exogenous mixer**, which patches and mixes the known future values with forecasted targets to refine the prediction. Finally, the output is passed through a linear head and reverse-normalized to produce the final multivariate forecast.
 * **Innovations**
@@ -53,43 +53,43 @@ This notebook shows how an example to use TTM (changing loss function, context/f
 
 * ETTH1, Zero-shot, 512-96
 
-<img src="/Users/liuzeyang/Projects/TTMs/e-0-96.png" alt="e-0-96" style="zoom: 67%;" />
+<img src="images/report_img/e-0-96.png" alt="e-0-96" style="zoom: 67%;" />
 
 * ETTH1, few-shot, 512-96, MSE loss
 
-<img src="/Users/liuzeyang/Projects/TTMs/e-5-96-m.png" alt="e-5-96-m" style="zoom:67%;" />
+<img src="images/report_img/e-5-96-m.png" alt="e-5-96-m" style="zoom:67%;" />
 
 * EHHT1, few-shot, 512-96, quantile loss
 
-<img src="/Users/liuzeyang/Projects/TTMs/e-5-96-q.png" alt="e-5-96-q" style="zoom:67%;" />
+<img src="images/report_img/e-5-96-q.png" alt="e-5-96-q" style="zoom:67%;" />
 
 * EHHT1, zero-shot, 1024-48
 
-<img src="/Users/liuzeyang/Projects/TTMs/e-0-48.png" alt="e-0-48" style="zoom:67%;" />
+<img src="images/report_img/e-0-48.png" alt="e-0-48" style="zoom:67%;" />
 
 * EHHT1, few-shot, 1024-48
 
-<img src="/Users/liuzeyang/Projects/TTMs/e-5-48.png" alt="e-5-48" style="zoom:67%;" />
+<img src="images/report_img/e-5-48.png" alt="e-5-48" style="zoom:67%;" />
 
 * MG, zero-shot, 512-96
 
-<img src="/Users/liuzeyang/Projects/TTMs/m-0-96.png" alt="m-0-96" style="zoom:67%;" />
+<img src="images/report_img/m-0-96.png" alt="m-0-96" style="zoom:67%;" />
 
 * MG, few-shot, 512-96, MSE loss
 
-<img src="/Users/liuzeyang/Projects/TTMs/m-5-96-m.png" alt="m-5-96-m" style="zoom:67%;" />
+<img src="images/report_img/m-5-96-m.png" alt="m-5-96-m" style="zoom:67%;" />
 
 * MG, few-shot, 512-96, quantile loss
 
-<img src="/Users/liuzeyang/Projects/TTMs/m-5-96-q.png" alt="m-5-96-q" style="zoom:67%;" />
+<img src="images/report_img/m-5-96-q.png" alt="m-5-96-q" style="zoom:67%;" />
 
 * MG, zero-shot, 1024-48
 
-<img src="/Users/liuzeyang/Projects/TTMs/m-0-48.png" alt="m-0-48" style="zoom:67%;" />
+<img src="images/report_img/m-0-48.png" alt="m-0-48" style="zoom:67%;" />
 
 * MG, few-shot, 1024-48
 
-<img src="/Users/liuzeyang/Projects/TTMs/m-5-48.png" alt="m-5-48" style="zoom:67%;" />
+<img src="images/report_img/m-5-48.png" alt="m-5-48" style="zoom:67%;" />
 
 Here is the test MSE:
 
@@ -117,7 +117,7 @@ Here is the test MSE:
 
 This notebook showed the rolling prediction by the TTM, context length 512 and forecast length 96, on the data ETTH1.  For the rolling prediction length 192, the zero shot MSE is 0.392. Here is the prediction plot
 
-<img src="/Users/liuzeyang/Projects/TTMs/rolling-pred.png" alt="rolling-pred" style="zoom:67%;" />
+<img src="images/report_img/rolling-pred.png" alt="rolling-pred" style="zoom:67%;" />
 
 * **Insight**: We can see that though we use the rolling prediction, but the loss did not increase largely, indicating that this model performs very well on prediction of ETTH1.
 
@@ -127,11 +127,11 @@ This notebook showed the how to use the pre-trained model (trained in ETTH1) on 
 
 * Pre-trained:
 
-<img src="/Users/liuzeyang/Projects/TTMs/image-20250320085910842.png" alt="image-20250320085910842" style="zoom:80%;" />
+<img src="images/report_img/image-20250320085910842.png" alt="image-20250320085910842" style="zoom:80%;" />
 
 * Train from scratch:
 
-<img src="/Users/liuzeyang/Projects/TTMs/image-20250320085956401.png" alt="image-20250320085956401" style="zoom:80%;" />
+<img src="images/report_img/image-20250320085956401.png" alt="image-20250320085956401" style="zoom:80%;" />
 
 * **Insights**: We can see the evaluation loss is not far from TTM, which is reasonable since the most advantage of TTM is that it is pre-trained and can generalize well.
 
@@ -141,15 +141,15 @@ This notebook showed how to do transfer learning of TSMixer. Firstly, this model
 
 * Zero-shot
 
-<img src="/Users/liuzeyang/Projects/TTMs/image-20250320090758096.png" alt="image-20250320090758096" style="zoom:80%;" />
+<img src="images/report_img/image-20250320090758096.png" alt="image-20250320090758096" style="zoom:80%;" />
 
 * Linear probing
 
-![image-20250320090834240](/Users/liuzeyang/Projects/TTMs/image-20250320090834240.png)
+![image-20250320090834240](images/report_img/image-20250320090834240.png)
 
 * Full fine-tune:
 
-![image-20250320090913570](/Users/liuzeyang/Projects/TTMs/image-20250320090913570.png)
+![image-20250320090913570](images/report_img/image-20250320090913570.png)
 
 * **Insights**: evaluation loss decreases lot on the linear probing but increase when doing full fine-tuning. Indicating that for ETTH2, linear probing is enough.
 
@@ -167,11 +167,11 @@ This notebook showed the how to use the pre-trained model (trained in ETTH1) on 
 
 * Pre-trained:
 
-![image-20250320092315845](/Users/liuzeyang/Projects/TTMs/image-20250320092315845.png)
+![image-20250320092315845](images/report_img/image-20250320092315845.png)
 
 * Train from scratch:
 
-![image-20250320092340505](/Users/liuzeyang/Projects/TTMs/image-20250320092340505.png)
+![image-20250320092340505](images/report_img/image-20250320092340505.png)
 
 ### H. [Patch Time Series Transformer for Transfer Learning across datasets]()
 
@@ -179,15 +179,15 @@ This notebook showed how to do transfer learning of PatchTST. Firstly, this mode
 
 * Zero-shot:
 
-![image-20250320095550001](/Users/liuzeyang/Projects/TTMs/image-20250320095550001.png)
+![image-20250320095550001](images/report_img/image-20250320095550001.png)
 
 * Linear probing:
 
-![image-20250320095644498](/Users/liuzeyang/Projects/TTMs/image-20250320095644498.png)
+![image-20250320095644498](images/report_img/image-20250320095644498.png)
 
 * Full fine tune:
 
-![image-20250320095719913](/Users/liuzeyang/Projects/TTMs/image-20250320095719913.png)
+![image-20250320095719913](images/report_img/image-20250320095719913.png)
 
 * **Insights**: evaluation loss decreases lot on the linear probing but increase when doing full fine-tuning. Indicating that for ETTH2, linear probing is enough.
 
