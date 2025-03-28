@@ -247,6 +247,10 @@ Here the table of MSEs
 |40|0.245|0.199|0.109|0.087|0.067|0.063|0.047|
 |100|1.186|0.467|0.267|0.225|0.191|0.178|0.137|
 
+Results show that both strategies significantly outperform the zero-shot baseline, even with as little as 5% of training data. However, in low-data regimes (5–30%), random sampling consistently leads to lower MSE compared to selecting from the end of the time series. This suggests that random sampling provides better distributional coverage, which benefits generalization. As the training fraction increases (≥50%), the performance gap between the two strategies narrows, indicating that either strategy becomes sufficient when ample data is available.
+
+
+
 
 
 ---
