@@ -205,10 +205,13 @@ Firstly, in the TTMs, the percentage in few-shot means the fraction of samples f
 For simulation of the MG data, I take the [tutorial](https://www.mathworks.com/matlabcentral/fileexchange/24390-mackey-glass-time-series-generator) for reference, using the Runge-Kutta method to numerically approaching the derivative. Here is a scratch:
 
 To generate
+
 $$
 \frac{dP(t)}{dt} = \frac{\beta\theta^nP(t-\tau)}{\theta^n+P(t-\tau)^n}-\gamma P(t)
 $$
+
 We use the Runge-Kutta method, with $\frac{dy}{dt} = f(t,y)$ known:
+
 $$
 \begin{aligned}
 y_{n+1} &= y_n + \frac{h}{6}(k_1+2k_2+2k_3+k_4)\\
@@ -219,6 +222,7 @@ k_3 &= f(t_n+\frac{h}{2},y_n+h\frac{k_2}{2})\\
 k_4 & = f(t_n+h,y_n+hk_3)
 \end{aligned}
 $$
+
 We chose the parameters to be $\theta = 0.2,\beta = 0.2,\gamma = 0.1,n = 10,\tau\in\{20,30,40,100\}$. 
 
 For more different performance of different parameters, see the streamlit scratch.
