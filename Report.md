@@ -19,7 +19,7 @@ Ref: [TTM](https://arxiv.org/pdf/2401.03955), [TSMixer](https://arxiv.org/pdf/23
 
 ### PatchTST
 
-<img src="/Users/liuzeyang/Projects/TTMs/image-20250320032559906.png" alt="image-20250320032559906" style="zoom:40%;" />
+<img src="images/report_img/image-20250320032559906.png" alt="image-20250320032559906" style="zoom:40%;" />
 
 * **Work flow of PatchTST**: A multivariate time series sample is first split into separate univariate series  ($x^{(i)}$, one for each variable/channel). Each univariate series is normalized and then divided into fixed-length patches ($x_p^{(i)}$, subsequences). These patches are linearly projected and enriched with positional encoding to retain the order of the time steps. Each channel is processed **independently through a shared Transformer encoder**, where the attention mechanism captures temporal patterns within each series. The encoded patch representations are then flattened and passed through a linear layer to generate the future predictions for each channel. Finally, all channel outputs are combined to form the multivariate forecast.
 * **Innovations**: 
