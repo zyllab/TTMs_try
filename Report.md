@@ -294,6 +294,12 @@ Some of the forecast plots:
 
 Results show that both strategies significantly outperform the zero-shot baseline, even with as little as 5% of training data. However, in low-data regimes (5–30%), random sampling consistently leads to lower MSE compared to selecting from the end of the time series. This suggests that random sampling provides better distributional coverage, which benefits generalization. As the training fraction increases (≥50%), the performance gap between the two strategies narrows, indicating that either strategy becomes sufficient when ample data is available. Also, for different time delay, the models perform pretty much the same, except when $\tau=40$ the zero-shot model performs extremely well resulting all models perform better than other time delay. And the model performs little worse at $\tau= 30$ which is unexpected since the larger the $\tau$ is the more chaotic the times series is.
 
+* read the chaos papers(2)
+* compare the l.e. and the delay embedding between the prediction from slightly different initial values and the original
+* add the results to streamlit
+* change x_0(10) for training data(10k), repeat the experiments.
+* longer prediction?
+* idea: finite precision, (with one decimal) in training 
 
 
 
