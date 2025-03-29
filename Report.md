@@ -204,6 +204,23 @@ Firstly, in the TTMs, the percentage in few-shot means the fraction of samples f
 
 For simulation of the MG data, I take the [tutorial](https://www.mathworks.com/matlabcentral/fileexchange/24390-mackey-glass-time-series-generator) for reference, using the Runge-Kutta method to numerically approaching the derivative. Here is a scratch:
 
+t_1 - t_1000 
+context length 100
+forecasting length 10
+
+{
+input: x_1-x_100
+output: x_101-x_110
+}
+
+901 samples
+
+fewshot 5% * 901
+
+901 900 ....
+
+
+
 To generate
 
 $$
