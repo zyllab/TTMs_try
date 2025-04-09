@@ -4,10 +4,14 @@ import numpy as np
 import nolds
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from io import StringIO
+import requests
 
 # --- Utils ---
-def parse_tensor_string(tensor_str):
-    return np.squeeze(np.array(eval(tensor_str.replace("tensor", "").replace("(", "").replace(")", ""))), axis=-1)
+def clean_and_parse(s):
+    s = s.replace('\n', ' ')      # Replace newlines with spaces
+    s = s.strip('[] ')            # Remove square brackets and surrounding spaces
+    return np.fromstring(s, sep=' ')
 
 def delay_embedding_3d(series, delay=1):
     return np.column_stack([
@@ -27,17 +31,33 @@ location = st.sidebar.selectbox("location", ["last", "uniform"])
 delay = st.sidebar.selectbox("Delay", [1, 2, 3])
 
 
-# --- Load Data ---
-datasetname = f"MG_x0_{x0}_tau_{tau}_{frac}_{location}"
-df = pd.read_csv(f"results/{datasetname}/dset_test.csv")
-df['past_target'] = df['past_target'].apply(parse_tensor_string)
-df['future_target'] = df['future_target'].apply(parse_tensor_string)
+# --- Load from Hugging Face ---
+url = "https://huggingface.co/datasets/zyllab/TTMs_on_MG/resolve/main/merged_full_dset.csv"
+response = requests.get(url)
 
-past_targets = np.stack(df['past_target'].values)
-future_targets = np.stack(df['future_target'].values)
-pred = np.squeeze(np.load(f"results/{datasetname}/predictions_original.npy"), axis=-1)
-pred_per = np.squeeze(np.load(f"results/{datasetname}/predictions_perturbed.npy"), axis=-1)
+# Read CSV from the downloaded content
+csv_data = StringIO(response.text)
+df = pd.read_csv(csv_data)
 
+df['past_target'] = df['past_target'].apply(clean_and_parse)
+df['future_target'] = df['future_target'].apply(clean_and_parse)
+df['pred'] = df['pred'].apply(clean_and_parse)
+df['pred_per'] = df['pred_per'].apply(clean_and_parse)
+
+# --- Filter by parameters ---
+df_filtered = df[
+    (df['x0'] == x0) &
+    (df['tau'] == tau) &
+    (df['frac'] == frac) &
+    (df['location'] == location)
+]
+
+# --- Extract output vectors ---
+past_targets = np.stack(df_filtered['past_target'].values)
+future_targets = np.stack(df_filtered['future_target'].values)
+pred = np.stack(df_filtered['pred'].values)
+pred_per = np.stack(df_filtered['pred_per'].values)
+st.write(f"### Data Shape: {past_targets.shape}, {future_targets.shape}, {pred.shape}, {pred_per.shape}")
 # --- MSE ---
 mse_original = np.mean((pred - future_targets) ** 2)
 mse_perturbed = np.mean((pred_per - future_targets) ** 2)
