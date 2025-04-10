@@ -8,6 +8,7 @@ import requests
 import pickle
 import io
 from sklearn.metrics import mutual_info_score
+import os
 
 # --- Utils ---
 
@@ -20,8 +21,9 @@ def load_data_from_hf(url: str):
 
 @st.cache_data
 def load_les_data():
-    les_df = df = pd.read_pickle("les_org.pkl")
-    return les_df
+    base_path = os.path.dirname(__file__) 
+    file_path = os.path.join(base_path, "les_org.pkl")
+    return pd.read_pickle(file_path)
 
 
 def delay_embedding_3d(series, delay=1):
@@ -198,7 +200,7 @@ def plot_3d_embedding(series, delay, label, rgb_color, opacity=0.7):
     emb = delay_embedding_3d(series, delay)
     return go.Scatter3d(
         x=emb[:, 0], y=emb[:, 1], z=emb[:, 2],
-        mode='lines',
+        mode='markers',
         marker=dict(
             size=2,
             color=rgb_color,     
