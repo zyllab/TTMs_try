@@ -20,6 +20,7 @@ def delay_embedding_3d(series, delay=1):
         series[2 * delay:]
     ])
 
+
 # --- Sidebar Inputs ---
 st.sidebar.title("Time Series Forecasting Explorer")
 st.sidebar.write("### Parameters")
@@ -30,7 +31,6 @@ frac = st.sidebar.selectbox("frac", [5, 30, 75])
 location = st.sidebar.selectbox("location", ["last", "uniform"])
 delay = st.sidebar.selectbox("Delay", [1, 2, 3])
 
-
 # --- Load from Hugging Face ---
 url = "https://huggingface.co/datasets/zyllab/TTMs_on_MG/resolve/main/merged_full_dset.csv"
 response = requests.get(url)
@@ -38,6 +38,7 @@ response = requests.get(url)
 # Read CSV from the downloaded content
 csv_data = StringIO(response.text)
 df = pd.read_csv(csv_data)
+
 
 df['past_target'] = df['past_target'].apply(clean_and_parse)
 df['future_target'] = df['future_target'].apply(clean_and_parse)
