@@ -11,13 +11,11 @@ This project explores **Tiny Time Mixers (TTM)** — a lightweight, pre-trained 
 * what are the advantages of TTM
 * where to improve TTM
 
-Ref: [TTM](https://arxiv.org/pdf/2401.03955), [TSMixer](https://arxiv.org/pdf/2306.09364), [PatchTST](https://arxiv.org/abs/2211.14730), [Git Repo of TSFM (Time Series Foundation Models)](https://github.com/ibm-granite/granite-tsfm/blob/main/README.md), [Mackey-Glass Time Series](https://www.kaggle.com/datasets/arashabbasi/mackeyglass-time-series)
-
 ---
 
 ## 2. Model Components
 
-### PatchTST
+### [PatchTST](https://arxiv.org/abs/2211.14730)
 
 <img src="images/report_img/image-20250320032559906.png" alt="image-20250320032559906" style="zoom:40%;" />
 
@@ -26,14 +24,14 @@ Ref: [TTM](https://arxiv.org/pdf/2401.03955), [TSMixer](https://arxiv.org/pdf/23
   * Channel-Independent Processing
   * Patch-Based Input Representation: reduce the complexity while using **positional embedding to capture the information between each patch**
 
-### TSMixer
+### [TSMixer](https://arxiv.org/pdf/2306.09364)
 
 <img src="images/report_img/image-20250320035227920.png" alt="image-20250320035227920" style="zoom:27%;" /><img src="images/report_img/image-20250320035458988.png" alt="image-20250320035458988" style="zoom:33.5%;" /><img src="images/report_img/image-20250320035337366.png" alt="image-20250320035337366" style="zoom:30%;" />
 
 * **Work flow of TSMixer**: A multivariate time series sample is first normalized using instance normalization. Then, each univariate channel is divided into patches (small segments), and these patches are reshaped and passed into the TSMixer backbone, which consists of **stacked MLP-Mixer layers**. These layers capture dependencies between patches (temporal), within-patch features, and (optionally) across channels. A **lightweight gated attention** mechanism within each mixer block helps the model focus on important features. After the backbone, a prediction head generates the base forecast. Optionally, two online reconciliation heads refine the forecast: one adjusts it based on cross-channel relationships, and the other ensures consistency across temporal hierarchies (like patch-level aggregations). The final output is a tuned multivariate forecast.
 * **Innovations**: Unlike PatchTST, TSMixer use MLP-only layer to capture the information **between patches**, and also **dependence information between channels**. TSMixer achieved these by using **permutations and shared matrix across other fixed dimensions**.
 
-### TTM
+### [TTM](https://arxiv.org/pdf/2401.03955)
 
 <img src="images/report_img/image-20250320041502155.png" alt="image-20250320041502155" style="zoom:50%;" />
 
@@ -49,47 +47,87 @@ Ref: [TTM](https://arxiv.org/pdf/2401.03955), [TSMixer](https://arxiv.org/pdf/23
 
 ### A. [Get started withe TinyTimeMixer(TTM)](https://github.com/ibm-granite/granite-tsfm/blob/main/notebooks/hfdemo/ttm_getting_started.ipynb)
 
-This notebook shows how an example to use TTM (changing loss function, context/forecast length, zero/few-shot) on data [ETTH1](https://raw.githubusercontent.com/zhouhaoyi/ETDataset/main/ETT-small/ETTh1.csv). Also, I perform the same task on simulated Mackey-Glass Time Series with 11000 time steps. Here are the results. For simplicity, I use 512-96 to represent context length 512 and forecast length 96
+This notebook shows how an example to use TTM (changing loss function, context/forecast length, zero/few-shot) on data [ETTH1](https://raw.githubusercontent.com/zhouhaoyi/ETDataset/main/ETT-small/ETTh1.csv). Also, I perform the same task on simulated [Mackey-Glass Time Series](https://www.kaggle.com/datasets/arashabbasi/mackeyglass-time-series) with 11000 time steps. Here are the results. For simplicity, I use 512-96 to represent context length 512 and forecast length 96
 
 * ETTH1, Zero-shot, 512-96
 
-<img src="images/report_img/e-0-96.png" alt="e-0-96" style="zoom: 67%;" />
+<details>
+  <summary>Time Series plot</summary>
+
+  <img src="images/report_img/e-0-96.png" alt="e-0-96" style="zoom: 67%;" />
+
+</details>
+
+
 
 * ETTH1, few-shot, 512-96, MSE loss
 
-<img src="images/report_img/e-5-96-m.png" alt="e-5-96-m" style="zoom:67%;" />
+<details>
+  <summary>Time Series plot</summary>
+
+  <img src="images/report_img/e-5-96-m.png" alt="e-5-96-m" style="zoom:67%;" />
+
+</details>
 
 * EHHT1, few-shot, 512-96, quantile loss
 
-<img src="images/report_img/e-5-96-q.png" alt="e-5-96-q" style="zoom:67%;" />
+<details>
+  <summary>Time Series plot</summary>
+
+  <img src="images/report_img/e-5-96-q.png" alt="e-5-96-q" style="zoom:67%;" />
+</details>
+
 
 * EHHT1, zero-shot, 1024-48
 
-<img src="images/report_img/e-0-48.png" alt="e-0-48" style="zoom:67%;" />
+<details>
+  <summary>Time Series plot</summary>
+
+  <img src="images/report_img/e-0-48.png" alt="e-0-48" style="zoom:67%;" />
+
+</details>
 
 * EHHT1, few-shot, 1024-48
 
-<img src="images/report_img/e-5-48.png" alt="e-5-48" style="zoom:67%;" />
+<details>
+  <summary>Time Series plot</summary>
+  <img src="images/report_img/e-5-48.png" alt="e-5-48" style="zoom:67%;" />
+</details>
 
 * MG, zero-shot, 512-96
 
-<img src="images/report_img/m-0-96.png" alt="m-0-96" style="zoom:67%;" />
+<details>
+  <summary>Time Series plot</summary>
+  <img src="images/report_img/m-0-96.png" alt="m-0-96" style="zoom:67%;" />
+</details>
 
 * MG, few-shot, 512-96, MSE loss
 
-<img src="images/report_img/m-5-96-m.png" alt="m-5-96-m" style="zoom:67%;" />
+<details>
+  <summary>Time Series plot</summary>
+  <img src="images/report_img/m-5-96-m.png" alt="m-5-96-m" style="zoom:67%;" />
+</details>
 
 * MG, few-shot, 512-96, quantile loss
 
-<img src="images/report_img/m-5-96-q.png" alt="m-5-96-q" style="zoom:67%;" />
+<details>
+  <summary>Time Series plot</summary>
+  <img src="images/report_img/m-5-96-q.png" alt="m-5-96-q" style="zoom:67%;" />
+</details>
 
 * MG, zero-shot, 1024-48
 
-<img src="images/report_img/m-0-48.png" alt="m-0-48" style="zoom:67%;" />
+<details>
+  <summary>Time Series plot</summary>
+  <img src="images/report_img/m-0-48.png" alt="m-0-48" style="zoom:67%;" />
+</details>
 
 * MG, few-shot, 1024-48
 
-<img src="images/report_img/m-5-48.png" alt="m-5-48" style="zoom:67%;" />
+<details>
+  <summary>Time Series plot</summary>
+  <img src="images/report_img/m-5-48.png" alt="m-5-48" style="zoom:67%;" />
+</details>
 
 Here is the test MSE:
 
@@ -114,44 +152,63 @@ Here is the test MSE:
   * Lengthen the context length and shorten the forecast length can decrease the loss significantly on ETTH1 (real world data), while the loss on MG remains almost unchanged. Which is reasonable since the information of previous time step can last at most $\tau$ steps according to its formula, $\frac{dx(t)}{dt} = \beta \frac{x(t - \tau)}{1 + x(t - \tau)^n} - \gamma x(t)$
 
 ### B. [Getting started with TinyTimeMixer (TTM) Rolling Predictions](https://github.com/ibm-granite/granite-tsfm/blob/main/notebooks/hfdemo/ttm_rolling_prediction_getting_started.ipynb)
+<details>
+  <summary>See full details</summary>
 
-This notebook showed the rolling prediction by the TTM, context length 512 and forecast length 96, on the data ETTH1.  For the rolling prediction length 192, the zero shot MSE is 0.392. Here is the prediction plot
+  This notebook showed the rolling prediction by the TTM, context length 512 and forecast length 96, on the data ETTH1.  For the rolling prediction length 192, the zero shot MSE is 0.392. Here is the prediction plot
 
-<img src="images/report_img/rolling-pred.png" alt="rolling-pred" style="zoom:67%;" />
+  <details>
+    <summary>Time Series plot</summary>
+    <img src="images/report_img/rolling-pred.png" alt="rolling-pred" style="zoom:67%;" />
+  </details>
 
-* **Insight**: We can see that though we use the rolling prediction, but the loss did not increase largely, indicating that this model performs very well on prediction of ETTH1.
+
+
+  * **Insight**: We can see that though we use the rolling prediction, but the loss did not increase largely, indicating that this model performs very well on prediction of ETTH1.
+
+</details>
 
 ### C. [Getting started with PatchTSMixer](https://github.com/ibm-granite/granite-tsfm/blob/main/notebooks/hfdemo/patch_tsmixer_getting_started.ipynb)
 
-This notebook showed the how to use the pre-trained model (trained in ETTH1) on ETTH1, also showed how to change hyper-parameter and change the target channel during training from scratch. Both the pre-trained model and model training from scratch got evaluation loss around 0.368.
+<details>
+  <summary>See full details</summary>
 
-* Pre-trained:
+  This notebook showed the how to use the pre-trained model (trained in ETTH1) on ETTH1, also showed how to change hyper-parameter and change the target channel during training from scratch. Both the pre-trained model and model training from scratch got evaluation loss around 0.368.
 
-<img src="images/report_img/image-20250320085910842.png" alt="image-20250320085910842" style="zoom:80%;" />
+  * Pre-trained:
 
-* Train from scratch:
+  <img src="images/report_img/image-20250320085910842.png" alt="image-20250320085910842" style="zoom:80%;" />
 
-<img src="images/report_img/image-20250320085956401.png" alt="image-20250320085956401" style="zoom:80%;" />
+  * Train from scratch:
 
-* **Insights**: We can see the evaluation loss is not far from TTM, which is reasonable since the most advantage of TTM is that it is pre-trained and can generalize well.
+  <img src="images/report_img/image-20250320085956401.png" alt="image-20250320085956401" style="zoom:80%;" />
+
+  * **Insights**: We can see the evaluation loss is not far from TTM, which is reasonable since the most advantage of TTM is that it is pre-trained and can generalize well.
+
+</details>
 
 ### D. [Patch Time Series Mixer for Transfer Learning across datasets](https://github.com/ibm-granite/granite-tsfm/blob/main/notebooks/hfdemo/patch_tsmixer_transfer.ipynb) 
 
-This notebook showed how to do transfer learning of TSMixer. Firstly, this model is pre-trained on the [ECL](https://github.com/zhouhaoyi/Informer2020) data, and then use the saved model to predict on the ETTH2 dataset. It used the zero-shot, linear probing and the full fine-tune:
+<details>
+  <summary>See full details</summary>
 
-* Zero-shot
+  This notebook showed how to do transfer learning of TSMixer. Firstly, this model is pre-trained on the [ECL](https://github.com/zhouhaoyi/Informer2020) data, and then use the saved model to predict on the ETTH2 dataset. It used the zero-shot, linear probing and the full fine-tune:
 
-<img src="images/report_img/image-20250320090758096.png" alt="image-20250320090758096" style="zoom:80%;" />
+  * Zero-shot
 
-* Linear probing
+  <img src="images/report_img/image-20250320090758096.png" alt="image-20250320090758096" style="zoom:80%;" />
 
-![image-20250320090834240](images/report_img/image-20250320090834240.png)
+  * Linear probing
 
-* Full fine-tune:
+  ![image-20250320090834240](images/report_img/image-20250320090834240.png)
 
-![image-20250320090913570](images/report_img/image-20250320090913570.png)
+  * Full fine-tune:
 
-* **Insights**: evaluation loss decreases lot on the linear probing but increase when doing full fine-tuning. Indicating that for ETTH2, linear probing is enough.
+  ![image-20250320090913570](images/report_img/image-20250320090913570.png)
+
+  * **Insights**: evaluation loss decreases lot on the linear probing but increase when doing full fine-tuning. Indicating that for ETTH2, linear probing is enough.
+
+</details>
 
 ### E. [PatchTSMixer in HuggingFace - Getting Started](https://github.com/ibm-granite/granite-tsfm/blob/main/notebooks/hfdemo/patchtsmixer_HF_blog.ipynb)
 
@@ -163,44 +220,55 @@ The same with D. [Patch Time Series Mixer for Transfer Learning across datasets]
 
 ### G. [Getting started with PatchTST](https://github.com/ibm-granite/granite-tsfm/blob/main/notebooks/hfdemo/patch_tst_getting_started.ipynb)
 
-This notebook showed the how to use the pre-trained model (trained in ETTH1) on ETTH1, also showed how to change hyper-parameter and change the target channel during training from scratch. 
+<details>
+  <summary>See full details</summary>
 
-* Pre-trained:
+  This notebook showed the how to use the pre-trained model (trained in ETTH1) on ETTH1, also showed how to change hyper-parameter and change the target channel during training from scratch. 
 
-![image-20250320092315845](images/report_img/image-20250320092315845.png)
+  * Pre-trained:
 
-* Train from scratch:
+  ![image-20250320092315845](images/report_img/image-20250320092315845.png)
 
-![image-20250320092340505](images/report_img/image-20250320092340505.png)
+  * Train from scratch:
 
-### H. [Patch Time Series Transformer for Transfer Learning across datasets]()
+  ![image-20250320092340505](images/report_img/image-20250320092340505.png)
 
-This notebook showed how to do transfer learning of PatchTST. Firstly, this model is pre-trained on the [ECL](https://github.com/zhouhaoyi/Informer2020) data, and then use the saved model to predict on the ETTH2 dataset. It used the zero-shot, linear probing and the full fine-tune:
+</details>
 
-* Zero-shot:
+### H. [Patch Time Series Transformer for Transfer Learning across datasets](https://github.com/ibm-granite/granite-tsfm/blob/main/notebooks/hfdemo/patch_tst_transfer.ipynb)
 
-![image-20250320095550001](images/report_img/image-20250320095550001.png)
+<details>
+  <summary>See full details</summary>
 
-* Linear probing:
+  This notebook showed how to do transfer learning of PatchTST. Firstly, this model is pre-trained on the [ECL](https://github.com/zhouhaoyi/Informer2020) data, and then use the saved model to predict on the ETTH2 dataset. It used the zero-shot, linear probing and the full fine-tune:
 
-![image-20250320095644498](images/report_img/image-20250320095644498.png)
+  * Zero-shot:
 
-* Full fine tune:
+  ![image-20250320095550001](images/report_img/image-20250320095550001.png)
 
-![image-20250320095719913](images/report_img/image-20250320095719913.png)
+  * Linear probing:
 
-* **Insights**: evaluation loss decreases lot on the linear probing but increase when doing full fine-tuning. Indicating that for ETTH2, linear probing is enough.
+  ![image-20250320095644498](images/report_img/image-20250320095644498.png)
 
+  * Full fine tune:
+
+  ![image-20250320095719913](images/report_img/image-20250320095719913.png)
+
+  * **Insights**: evaluation loss decreases lot on the linear probing but increase when doing full fine-tuning. Indicating that for ETTH2, linear probing is enough.
+
+</details>
 
 ---
 
 ## 4. Experiments
 
+The following method is focused on the prediction of a chaotic dynamic systems' data
+
 ### A. Few-shot percentage vs Time delay
 
 This experiment mainly consider the performance of the model with different percentage in the few-shot training over different MG data with different time delay $\tau$.
 
-Firstly, in the TTMs, the percentage in few-shot means the fraction of samples for fine-tuning (slicing windows with $length = context-length+forecast-length$). In our experiment,  we chose context length 512 and forecast length 96. So if we have the 6000 time entries to train, we could have 6000-(512+96)+1 =5,393 samples, each consist of an input $x\in\mathbb{R}^{512}$ and output $y \in \mathbb{R}^{96}$. For example, denote the time series $ \{x_i \}_{i=1}^{6000} $, then first sample is $(x_1,...,x_{512})$ combined with output $(x_{513},...x_{608})$, and the second sample is $(x_2,...,x_{513})$ combined with output $(x_{514},...,x_{609})$. Then in the fine tuning, for example 5% few-shot, 5393*5% samples will be uesd to train the model
+Firstly, in the TTMs, the percentage in few-shot means the fraction of samples for fine-tuning (slicing windows with $length = context \ length+forecast \ length$). In our experiment,  we chose context length 512 and forecast length 96. So if we have the 6000 time entries to train, we could have 6000-(512+96)+1 =5,393 samples, each consist of an input $x\in\mathbb{R}^{512}$ and output $y \in \mathbb{R}^{96}$. For example, denote the time series $ \{x_i \}_{i=1}^{6000} $, then first sample is $(x_1,...,x_{512})$ combined with output $(x_{513},...x_{608})$, and the second sample is $(x_2,...,x_{513})$ combined with output $(x_{514},...,x_{609})$. Then in the fine tuning, for example 5% few-shot, 5393*5% samples will be uesd to train the model
 
 There are three ways to select the training samples, from start, last and randomly choose from training dataset. We will do both the last position and the uniformly choosing.
 
@@ -225,6 +293,8 @@ k_4 & = f(t_n+h,y_n+hk_3)
 \end{aligned}
 $$
 
+In the implementation of the method, we fixed the $P(t-\tau)$ in the computation of $k_1,...,k_4$ even though the $t should change according to the formula. 
+
 We chose the parameters to be $\theta = 0.2,\beta = 0.2,\gamma = 0.1,n = 10,\tau\in\{20,30,40,100\}$. 
 
 For more different performance of different parameters, see the streamlit scratch.
@@ -233,19 +303,40 @@ Firstly see the MG data:
 
 * $\tau = 20$:
 
-<img src="images/report_img/image-20250328191257344.png" alt="image-20250328191257344" style="zoom:50%;" />
+<details>
+  <summary> Time series plot </summary>
+
+  <img src="images/report_img/image-20250328191257344.png" alt="image-20250328191257344" style="zoom:50%;" />
+
+</details>
 
 * $\tau = 30$:
 
-<img src="images/report_img/image-20250328191353020.png" alt="image-20250328191353020" style="zoom:50%;" />
+<details>
+  <summary> Time series plot </summary>
+
+  <img src="images/report_img/image-20250328191353020.png" alt="image-20250328191353020" style="zoom:50%;" />
+
+</details>
 
 * $\tau = 40$:
 
-<img src="images/report_img/image-20250328191434034.png" alt="image-20250328191434034" style="zoom:50%;" />
+<details>
+  <summary> Time series plot </summary>
+
+  <img src="images/report_img/image-20250328191434034.png" alt="image-20250328191434034" style="zoom:50%;" />
+
+
+</details>
 
 * $\tau = 100$:
 
-<img src="images/report_img/image-20250328191529021.png" alt="image-20250328191529021" style="zoom:50%;" />
+<details>
+  <summary> Time series plot </summary>
+
+  <img src="images/report_img/image-20250328191529021.png" alt="image-20250328191529021" style="zoom:50%;" />
+
+</details>
 
 Here the table of MSEs
 
@@ -327,6 +418,12 @@ For the experiment, here is the absolute difference between mean value of l.e. o
   * there is huge difference between overall l.e and l.e. of predictions for unknown reasons. one possible cause is the last point I mentioned.
   * for more illustrations see the streamlit app.
 
+### C. Can TTMs **truly** learn chaos?
+
+For experiment B, there are some drawback:
+* lyapunov exponent should stay relatively stable when changing initial value or computing window (the window of time entries input to the function to compute the lyapunov exponent), which is not verified in the experiment
+* 
+
 ---
 
 ## 5. Summary
@@ -360,7 +457,7 @@ Overall, **TTM is a powerful and lightweight solution** for time series forecast
 * idea: finite precision, (with one decimal) in training
 
 
-## 
+### Apr. 
 * first make sure the l.e. stable for the generation data
 * change the prediction window
 * burning period (both in data generation and prediction)
