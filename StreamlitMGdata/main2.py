@@ -166,7 +166,7 @@ fig.update_layout(title="Mackey-Glass Time Series", xaxis_title="t", yaxis_title
 st.plotly_chart(fig, use_container_width=True)
 
 # ========== Lyapunov Exponent ==========
-st.subheader("Estimated Lyapunov Exponent")
+st.subheader("Estimated Lyapunov Exponent by lyap_r")
 sample = X[::100][9000:10000]  # Downsample and use stable part
 
 try:
