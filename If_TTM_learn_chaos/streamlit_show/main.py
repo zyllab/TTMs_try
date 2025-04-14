@@ -182,7 +182,7 @@ timesteps = np.arange(len(true_preds[idx]))
 ax_ts.plot(timesteps, true_preds[idx], label="True", linewidth=1.5)
 ax_ts.plot(timesteps, preds[idx], label="Pred", linestyle="--")
 ax_ts.plot(timesteps, preds_pt[idx], label="Pred Perturbed", linestyle=":")
-ax_ts.axvline(1056, color='red', linestyle='--', label="Cut Point @1056")
+ax_ts.axvline(1056, color='red', linestyle='--', label="Cut Point @1076")
 
 ax_ts.set_title("Time Series Comparison")
 ax_ts.set_xlabel("Timestep")
@@ -202,7 +202,7 @@ def plot_3d_embedding(series, delay, label, rgb_color, opacity=0.7):
         x=emb[:, 0], y=emb[:, 1], z=emb[:, 2],
         mode='markers',
         marker=dict(
-            size=2,
+            size=1.5,
             color=rgb_color,     
             opacity=opacity       
         ),
