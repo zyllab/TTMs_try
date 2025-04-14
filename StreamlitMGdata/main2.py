@@ -2,6 +2,51 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 import nolds
+from sklearn.metrics import mutual_info_score
+
+
+def mf_value(x):
+    n = len(x)
+    fft_vals = np.fft.rfft(x,n)
+    psd = np.abs(fft_vals)**2
+    freqs = np.fft.rfftfreq(n)
+    # Skip DC component at index 0
+    mean_freq = np.sum(freqs[1:] * psd[1:]) / np.sum(psd[1:])
+    return mean_freq
+
+def compute_ami_lag(x, max_lag=100, bins=32):
+    """
+    Estimate optimal embedding lag via average mutual information (AMI).
+    Returns list of AMI values and the first local minimum lag.
+    """
+    # Discretize data into bins
+    hist, bin_edges = np.histogram(x, bins=bins)
+    digitized = np.digitize(x, bin_edges[:-1])
+    
+    ami = []
+    for lag in range(1, max_lag):
+        x1 = digitized[:-lag]
+        x2 = digitized[lag:]
+        mi = mutual_info_score(x1, x2)
+        ami.append(mi)
+
+    # Find the first local minimum
+    for i in range(1, len(ami) - 1):
+        if ami[i] < ami[i-1] and ami[i] < ami[i+1]:
+            return i + 1, ami  # +1 because lag starts at 1
+
+    return np.argmin(ami) + 1, ami  # fallback if no local min
+
+def compute_le(x,ms=None):
+    mf = mf_value(x)
+    if ms is None:
+        min_tsep = int(round(1/mf))
+    else:
+        min_tsep = ms
+    lag,_ = compute_ami_lag(x,bins = 100)
+    #print(min_tsep,lag)
+    le = nolds.lyap_r(x,min_tsep=min_tsep,lag=lag)
+    return le
 
 # ========== Equation and Integration ==========
 st.markdown(r"""
@@ -125,14 +170,7 @@ st.subheader("Estimated Lyapunov Exponent")
 sample = X[::100][9000:10000]  # Downsample and use stable part
 
 try:
-    fft_vals = np.fft.rfft(sample)
-    psd = np.abs(fft_vals)**2
-    freqs = np.fft.rfftfreq(len(sample))
-    mean_freq = np.sum(freqs[1:] * psd[1:]) / np.sum(psd[1:])
-    mean_period = 1 / mean_freq
-    min_tsep = int(round(mean_period))
-
-    lyap_est = nolds.lyap_r(sample, emb_dim=10, min_tsep=min_tsep)
+    lyap_est = compute_le(sample)
     st.write(f"Lyapunov Exponent (estimated): {lyap_est:.5f}")
 except Exception as e:
     st.error(f"Failed to estimate Lyapunov exponent: {e}")
