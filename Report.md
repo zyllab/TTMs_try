@@ -4,7 +4,7 @@
 
 In the field of multivariate time series forecasting, traditional models struggle with generalization, high computational cost, and lack of scalability. Recently, large pre-trained models (like GPT4TS, TimesFM) have shown promise, but they require significant resources.
 
-This project explores **Tiny Time Mixers (TTM)** — a lightweight, pre-trained time series forecasting model that achieves strong performance using only ~1M parameters. Firstly, the structure of TTM, TSMixer, PatchTST will be shown for comprehension (TSMixer and PatchTST are two models where some ideas of TTM inherits from). Secondly, this report will record the results of the public demo notebooks from author. Moreover, during the reproduce process, I tried the Mackey-Glass Time Series, for a better understanding of TTM. By doing these, I want to figure out the following questions:
+This project explores [**Tiny Time Mixers (TTM)**](https://github.com/ibm-granite/granite-tsfm/tree/main/tsfm_public/models/tinytimemixer) — a lightweight, pre-trained time series forecasting model that achieves strong performance using only ~1M parameters. Firstly, the structure of TTM, TSMixer, PatchTST will be shown for comprehension (TSMixer and PatchTST are two models where some ideas of TTM inherits from). Secondly, this report will record the results of the public demo notebooks from author. Moreover, during the reproduce process, I tried the Mackey-Glass Time Series, for a better understanding of TTM. By doing these, I want to figure out the following questions:
 
 * what is the structure of TTM
 * why is TTM constructed in this structure (where does the idea come from)
