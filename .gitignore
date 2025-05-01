@@ -1,2 +1,10 @@
 /TTMTvenv
 save_MGdata/all_MGdatas.pkl
+how_to_learn_chaos/experiments/LSTM_chaos_test.pkl
+how_to_learn_chaos/experiments/TTM_chaos_test.pkl
+how_to_learn_chaos/experiments/TTM_5_chaos_test.pkl
+how_to_learn_chaos/experiments/TTM_dege_chaos_test.pkl
+how_to_learn_chaos/experiments/TTM_chaos_test_200.pkl
+how_to_learn_chaos/experiments/TTM_5_chaos_test_200.pkl
+how_to_learn_chaos/experiments/TTM_dege_chaos_test_200.pkl
+how_to_learn_chaos/experiments/combined_data.pkl

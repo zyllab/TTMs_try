@@ -19,7 +19,7 @@ This project explores [**Tiny Time Mixers (TTM)**](https://github.com/ibm-granit
 
 <img src="images/report_img/image-20250320032559906.png" alt="image-20250320032559906" style="zoom:40%;" />
 
-* **Work flow of PatchTST**: A multivariate time series sample is first split into separate univariate series  ($x^{(i)}$, one for each variable/channel). Each univariate series is normalized and then divided into fixed-length patches ($x_p^{(i)}$, subsequences). These patches are linearly projected and enriched with positional encoding to retain the order of the time steps. Each channel is processed **independently through a shared Transformer encoder**, where the attention mechanism captures temporal patterns within each series. The encoded patch representations are then flattened and passed through a linear layer to generate the future predictions for each channel. Finally, all channel outputs are combined to form the multivariate forecast.
+* **Work flow of PatchTST**: A multivariate time series sample is first split into separate univariate series  ( $x^{(i)}$ , one for each variable/channel). Each univariate series is normalized and then divided into fixed-length patches ( $x_p^{(i)}$ , subsequences). These patches are linearly projected and enriched with positional encoding to retain the order of the time steps. Each channel is processed **independently through a shared Transformer encoder**, where the attention mechanism captures temporal patterns within each series. The encoded patch representations are then flattened and passed through a linear layer to generate the future predictions for each channel. Finally, all channel outputs are combined to form the multivariate forecast.
 * **Innovations**: 
   * Channel-Independent Processing
   * Patch-Based Input Representation: reduce the complexity while using **positional embedding to capture the information between each patch**
@@ -268,7 +268,7 @@ The following method is focused on the prediction of a chaotic dynamic systems' 
 
 This experiment mainly consider the performance of the model with different percentage in the few-shot training over different MG data with different time delay $\tau$.
 
-Firstly, in the TTMs, the percentage in few-shot means the fraction of samples for fine-tuning (slicing windows with $length = context \ length+forecast \ length$). In our experiment,  we chose context length 512 and forecast length 96. So if we have the 6000 time entries to train, we could have 6000-(512+96)+1 =5,393 samples, each consist of an input $x\in\mathbb{R}^{512}$ and output $y \in \mathbb{R}^{96}$. For example, denote the time series $ \{x_i \}_{i=1}^{6000} $, then first sample is $(x_1,...,x_{512})$ combined with output $(x_{513},...x_{608})$, and the second sample is $(x_2,...,x_{513})$ combined with output $(x_{514},...,x_{609})$. Then in the fine tuning, for example 5% few-shot, 5393*5% samples will be uesd to train the model
+Firstly, in the TTMs, the percentage in few-shot means the fraction of samples for fine-tuning (slicing windows with $length = context \ length+forecast \ length$ ). In our experiment,  we chose context length 512 and forecast length 96. So if we have the 6000 time entries to train, we could have 6000-(512+96)+1 =5,393 samples, each consist of an input $x\in\mathbb{R}^{512}$ and output $y \in \mathbb{R}^{96}$ . For example, denote the time series $ \{x_i \}_{i=1}^{6000} $ , then first sample is $(x_1,...,x_{512})$ combined with output $(x_{513},...x_{608})$ , and the second sample is $(x_2,...,x_{513})$ combined with output $(x_{514},...,x_{609})$ . Then in the fine tuning, for example 5% few-shot, 5393*5% samples will be uesd to train the model
 
 There are three ways to select the training samples, from start, last and randomly choose from training dataset. We will do both the last position and the uniformly choosing.
 
@@ -371,7 +371,7 @@ Some of the forecast plots:
 Results show that both strategies significantly outperform the zero-shot baseline, even with as little as 5% of training data. However, in low-data regimes (5–30%), random sampling consistently leads to lower MSE compared to selecting from the end of the time series. This suggests that random sampling provides better distributional coverage, which benefits generalization. As the training fraction increases (≥50%), the performance gap between the two strategies narrows, indicating that either strategy becomes sufficient when ample data is available. Also, for different time delay, the models perform pretty much the same, except when $\tau=40$ the zero-shot model performs extremely well resulting all models perform better than other time delay. And the model performs little worse at $\tau= 30$ which is unexpected since the larger the $\tau$ is the more chaotic the times series is.
 
 
-### B. did this model learn chaos?
+### B. Did this model learn chaos?
 
 Firstly, the method to generate is updated by the Runge-Kutta method combined with linear interpolation, [specified to generate the DDE time series](https://academic.oup.com/book/7531/chapter-abstract/152490685?redirectedFrom=fulltext). Note that, though compared to MGdata generated by Eular method through comparing maximal lyapunov exponent, due to limitations of accuracy in [numerical method](https://cschoel.github.io/nolds/nolds.html#lyapunov-exponent-rosenstein-et-al), the behaviour of RK4 method and the modified RK4 method are similar. We will use the modified RK4 method to generate MGdata used in this experiment.For full details of MGdata from different parameters, please see the [streamlit app](https://ttmstry-jcda6waumgfhufuhvdci6w.streamlit.app/)
 
@@ -454,6 +454,62 @@ For other parameter combinations, please see the deployed [streamlit app](https:
   * TTMs can predict the “patterns” (lyapunov exponent, or the delay embeddings) in some sense when tau is relatively small (60).
   * But for the actual prediction value, it is far away from the original data
   * For large tau (200), both the pattern and the prediction value are not satisfactory.
+
+### D. Which model can learn chaos
+
+#### Experiment design
+
+In this experiment, we want to explore which model can learn the chaos better, $i.e.$ for a given sequence of Mackey Glass data with all parameters fixed, the prediction after the burning period (for example, the burning period of a model with context length 60 is 60) will be used to measure the performance. The metrics to measure the performance are listed below:
+* **Metrics**:
+
+  * **MSE**: Mean square error between the prediction and the true data
+  * **Lyapunov Exponent**: Computed through the method [`nolds.lyap_r`](https://cschoel.github.io/nolds/nolds.html#lyapunov-exponent-rosenstein-et-al), with parameters `min_tsep` using the mean period of the time series and `lag` using the first minimum lag of the average mutual information, proposed by [Andrew M. Fraser and Harry L. Swinney](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.33.1134). The lyapunov exponents of true prediction and prediction from the model will be computed and then will be compared through the Kolmogorov-Smirlov test to comfirm they come from the same distribution
+  * **Fourier Sepctrum**: For each time series,the power spectral density (PSD) will be computed. Then the mean of euclidean distance ( $l_2-$ distance) between PSD from true value and prediction will be computed over the samples (each sample reprents a different starting point of the context window).
+  * **Average Mutual Information**: For the values of average mutual information against the time lag, the first minimum lag will be recored for comparison.
+
+* **Models**:
+
+  * TTM: The [TTM-r2](https://huggingface.co/ibm-granite/granite-timeseries-ttm-r2) model with context length 512 and prediction length 96.
+  * TTM_5: It's the same model with the above model. But in the rolling prediction, it only uses the first 5 predictions in the total 96 predictions to update the context and then performs the next prediction and repeats.
+  * TTM_short: The shortern version of rolling prediction of TTM. In every repeat of rolling predction, the prediction used for update the context is 3 steps less than the previous repeat. In other words, for the first prediction, we use the full length of prediction, 96 steps, to update the context for the next prediction. Then in the next prediction, we only use 96-3*1 steps of the prediction to update the context, and so on.
+  * LSTM: Long-short term memory model, with hidden state length 128.
+
+* **Results**:
+
+| $\tau = 60$ :| MSE|mse of le / $\times 10^{-4}$ |mse of minimum lag|mse of psd/ $\times 10^6$ |
+|---|---|---|---|---|
+|LSTM|0.147|4.5|6.79|3.62|
+|TTM|0.110|0.93|14.0|2.33|
+|TTM_5|0.128|1.11|9.18|2.96|
+|TTM_short|0.116|1.07|9.98|2.40|
+
+<details>
+  <summary>lyapunov exponents</summary>
+
+  <img src="images/report_img/d38f17ea-2942-4451-96f6-69eff6c3309c.png" alt="d38f17ea-2942-4451-96f6-69eff6c3309c" style="zoom:67%;" />
+
+</details>
+
+
+
+| $\tau = 200$ :| MSE|mse of le / $\times 10^{-4}$ |mse of minimum lag|mse of psd/ $\times 10^6$ |
+|---|---|---|---|---|
+|LSTM| \ | \ | \ | \ |
+|TTM|0.082|1.77|15.9| 109 |
+|TTM_5|0.092|1.48|14.5|151|
+|TTM_short|0.082|2.08|19.4|118|
+|White Noise|0.141|4.1|43.4|0.72|
+
+<details>
+  <summary>lyapunov exponents</summary>
+
+  <img src="images/report_img/ae73d36b-5c93-47ec-a17f-b253cdbb31d6.png" alt="ae73d36b-5c93-47ec-a17f-b253cdbb31d6" style="zoom:67%;" />
+
+</details>
+
+
+
+
 
 
 ---
