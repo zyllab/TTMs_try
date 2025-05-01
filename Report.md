@@ -508,6 +508,7 @@ In this experiment, we want to explore which model can learn the chaos better, $
 </details>
 
 
+For time series plot, please see the [streamlit app](https://ttmstry-vnsbdj9hdfd2pyrrjv6e79.streamlit.app/)
 
 
 

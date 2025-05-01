@@ -49,7 +49,7 @@ if combined_data:
         axes[i].axvline(x=context_length, linestyle='--', color='black', label='Prediction Start')
         
         # Plot the predictions from the context onward
-        axes[i].plot(range(context_length, context_length + len(combined_data[key][index_to_plot])), combined_data[key][index_to_plot], label=key)
+        axes[i].plot(range(context_length, context_length + len(combined_data[key][index_to_plot])), combined_data[key][index_to_plot], label=key,color = "blue")
         axes[i].set_title(f"True vs Prediction ({key}) - True_200")
         axes[i].set_xlabel('Time Step')
         axes[i].set_ylabel('Lyapunov Exponent')
@@ -63,7 +63,7 @@ if combined_data:
         axes[i + 3].axvline(x=context_length, linestyle='--', color='black', label='Prediction Start')
         
         # Plot the predictions from the context onward
-        axes[i + 3].plot(range(context_length, context_length + len(combined_data[key][index_to_plot])), combined_data[key][index_to_plot], label=key)
+        axes[i + 3].plot(range(context_length, context_length + len(combined_data[key][index_to_plot])), combined_data[key][index_to_plot], label=key,color = "red")
         axes[i + 3].set_title(f"True vs Prediction ({key}) - True_60")
         axes[i + 3].set_xlabel('Time Step')
         axes[i + 3].set_ylabel('Lyapunov Exponent')
