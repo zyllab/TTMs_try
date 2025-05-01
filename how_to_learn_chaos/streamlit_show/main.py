@@ -16,7 +16,7 @@ def download_pickle_file(file_url):
 st.title("Time Series Prediction Plots")
 
 # User input to select the index to plot
-index_to_plot = st.number_input("Enter the index to plot", min_value=0, value=10, step=1)
+index_to_plot = st.number_input("Enter the index to plot", min_value=1, value=10, max_value=100, step=1)-1
 
 # URL for the combined_data.pkl file uploaded to Hugging Face
 file_url = 'https://huggingface.co/datasets/zyllab/TTMs_on_MG/resolve/main/combined_data.pkl'  # Replace with your actual file URL
