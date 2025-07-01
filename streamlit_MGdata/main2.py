@@ -118,6 +118,7 @@ def MG_euler(x, x_pre, delta, gamma, beta, theta, n):
 def generate_MG(method, gamma, beta, tau, theta, n, x0, N, delta, history_value):
     past_len = int(np.floor(tau / delta))
     x_past = np.zeros(past_len+N+1)+history_value
+    x_past[past_len-1] = x0  # Set initial value at the correct index
     x=x0
     T = np.zeros(N + 1)
     X = np.zeros(N + 1)
